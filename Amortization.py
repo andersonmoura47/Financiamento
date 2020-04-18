@@ -12,117 +12,119 @@ Comentários:
     Contatos:
         Guithub: Anderson Moura - andersonmoura47
         Instagram: anderson_moura47
-
 """
 #~~~~~~~~~~~~~~~~~~~~~~~~~~> CONVERSÃO DE TAXA <~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def conversao_de_taxa(i, converter_taxa):
-    if converter_taxa == 1: #converter de a.a para a.m:
-        i = ((1 + i) ** (1/12)) - 1
-    elif converter_taxa == 2: #converter de a.m para a.a formula:
-        i = ((1 + i) ** 12) - 1
+def conversao_de_taxa(i):
+    v = True
+    while v == True: # validacao da pergunta 1 (converter taxa?)
+        p = int(input('Deseja converter a taxa?\n1 - Sim\n2 - Não'))
+        if p == 1:
+            v2 = True
+            while v2 == True: # validacao da pergunta 2 (periodos para convercoes de taxa)
+                p2 = int(input('Escolha a opção de conversão desejada: \n1 - Anual para mensal \n2 - Mensal para Anual'))
+                if p2 == 1:
+                    i = (((1 + (i/100)) ** (1/12)) - 1) * 100 # conversao de a.a para a.m
+                    v2 = False # sair da p2
+                elif p2 == 2:
+                    i = (((1 + (i/100)) ** 12) - 1) * 100    # conversao de a.m para a.a
+                    v2 = False # sair da p2
+                else:
+                    print('Opção inválida!')
+            v = False # sair da p1
+        elif p == 2:
+            i = i # mantem a taxa
+            v = False # sair da p1
+        else:
+            print('Opção inválida!')
     return i
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> SAC <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def sac(pv, i, n, converter_taxa = 0):
+def sac(pv, i, n):
     """
     Calcula um financiamento no sistema SAC, e retorna a lista com os valores das parcelas
     Argumentos:
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n: numero de parcelas (EX: numero de meses)
-    Para converter a taxa de ao ano para ao mês mude o valor da variável "converter_taxa" para 1
-    Para converter a taxa de ao mês para ao ano mude o valor da variável "converter_taxa" para 2
+
     """
-    i = i / 100
-    i = conversao_de_taxa(i, converter_taxa)
-    si = pv
-    am = pv / n # constante
-    s = 0
-    parc = []
-    for a in range(n):
-        j = si * i
-        pmt = am + j
-        sd = si - am
-        s += pmt
-        si = sd
+    i = conversao_de_taxa(i)
+    i = i / 100 
+    si = pv # saldo inicial (si) começa como valor presente (PV) 
+    am = pv / n # amortização (am) constante
+    parc = [] # lista para acumular o valor das parcelas
+    for a in range(n): 
+        j = si * i # juros (j)
+        pmt = am + j # parcelas (pmt)
+        sd = si - am # saldo final (sd)
+        si = sd # saldo inicial passa a ser o saldo final
         parc.append(float('%.2f' %pmt))
     return (parc)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> PRICE <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def price(pv, i, n, converter_taxa = 0):
+def price(pv, i, n):
     """
     Calcula um financiamento no sistema PRICE, e retorna a lista com os valores das parcelas
     Argumentos:
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n: numero de parcelas (EX: numero de meses)
-    Para converter a taxa de ao ano para ao mês mude o valor da variável "converter_taxa" para 1
-    Para converter a taxa de ao mês para ao ano mude o valor da variável "converter_taxa" para 2
+    
     """
+    i = conversao_de_taxa(i)
     i = i / 100
-    i = conversao_de_taxa(i, converter_taxa)
     si = pv
-    pmt = pv * (i / (1 - ((1 + i)**(-n)))) # constante
-    s = 0
+    pmt = pv * (i / (1 - ((1 + i)**(-n)))) # parcelas (pmt) constantes 
     parc = []
     for a in range(n):
         j = si * i
         am = pmt - j
         sd = si - am
-        s += pmt
         si = sd
         parc.append(float('%.2f' %pmt))
     return (parc)
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> SAA <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def saa(pv, i, n, converter_taxa = 0):
+def saa(pv, i, n):
     """
     Calcula um financiamento no sistema SAA, e mostra os valores das parcelas a serem pagas e o valor total
     Argumentos:
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n : numero de parcelas (EX: numero de meses)
-    Para converter a taxa de ao ano para ao mês mude o valor da variável "converter_taxa" para 1
-    Para converter a taxa de ao mês para ao ano mude o valor da variável "converter_taxa" para 2
+    
     """
+    i = conversao_de_taxa(i)
     i = i / 100
-    i = conversao_de_taxa(i, converter_taxa)
     si = pv
-    s = 0
     parc = []
     for a in range(n):
         j = si * i
-        if (a + 1) != n: # AM = 0
+        if (a + 1) != n: # a amortização so é somada ao saldo inicial no último pagamento
             am = 0
-        else:            # AM + SI
+        else:            # AM + SI 
             am = si
         pmt = am + j
         sd = si - am
-        s += pmt
         si = sd
         parc.append(float('%.2f' %pmt))
     return (parc)
 
-"""
 #==========================================CHAMANDO AS FUNÇÕES=======================================
 pv = 100000
-i = 8
-n = 60
-convert_tax = 1 #int(input("Deseja converter a taxa? \n0 - Não\n1 - De a.a para a.m\n2 - De a.m para a.a\nDigite o número desejado:"))
-# 0 - não | 1 - de a.a -> a.m | 2 - a.m -> a.a
+i = 0.64 # taxa mensal (7.95% a.a)
+n = 12 
 
-a = sac(pv, i, n, converter_taxa = convert_tax)
-b = price(pv, i, n, converter_taxa = convert_tax)
-c = saa(pv, i, n, converter_taxa = convert_tax)
+a = sac(pv, i, n) 
 
-print('Valor: R$',pv, '\nTaxa: ',i,'%', '\nParcelas: ', n)
-print('\nSAC:\n Parcelas: ', a, '\n Valor total: ', sum(a))
-print('\nPRICE:\n Parcelas: ', b, '\n Valor total: ', sum(b))
-print('\nSAA:\n Parcelas: ', c, '\n Valor total: ', sum(c))
+print('\nValor: R$',pv, '\nTaxa: ',i,'%', '\nParcelas: ', n)
+print('\nValores das Parcelas:')
+for v in range(len(a)):
+    print(v + 1,' - R$', a[v])
+print('\nValor total pago: R$', sum(a),'\n')
+
+
 """
-
-'''
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> Anotações - formas de calculo: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - TABELA: n|Saldo i (Si)|juros (j)|Amortização (AM)|    Parcela (PMT)     |    Saldo f (SD)
 - SAC:     |  SD n-1    | Si * i  |     PV / n     |         AM + j       | Si - AM      #AM CONSTANTE
@@ -132,5 +134,4 @@ print('\nSAA:\n Parcelas: ', c, '\n Valor total: ', sum(c))
 # PRICE - PMT CONSTANTE, AM = PMT - J
 # SAA - PAGA JUROS CONSTANTE, PV PAGO NA ULTIMA PMT, AM = 0, NA ULTIMA PMT: AM + SI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-'''
+"""
