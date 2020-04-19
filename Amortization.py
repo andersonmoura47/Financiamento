@@ -8,7 +8,7 @@ Comentários:
 
     Nas linhas finais do codigo as funções são chamadas e executadas. Para simular e conferir os valores obtidos:
         https://fazaconta.com/financiamentos-tabela-sac.htm
-    
+
     Contatos:
         Guithub: Anderson Moura - andersonmoura47
         Instagram: anderson_moura47
@@ -49,11 +49,11 @@ def sac(pv, i, n):
 
     """
     i = conversao_de_taxa(i)
-    i = i / 100 
-    si = pv # saldo inicial (si) começa como valor presente (PV) 
+    i = i / 100
+    si = pv # saldo inicial (si) começa como valor presente (PV)
     am = pv / n # amortização (am) constante
     parc = [] # lista para acumular o valor das parcelas
-    for a in range(n): 
+    for a in range(n):
         j = si * i # juros (j)
         pmt = am + j # parcelas (pmt)
         sd = si - am # saldo final (sd)
@@ -69,12 +69,12 @@ def price(pv, i, n):
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n: numero de parcelas (EX: numero de meses)
-    
+
     """
     i = conversao_de_taxa(i)
     i = i / 100
     si = pv
-    pmt = pv * (i / (1 - ((1 + i)**(-n)))) # parcelas (pmt) constantes 
+    pmt = pv * (i / (1 - ((1 + i)**(-n)))) # parcelas (pmt) constantes
     parc = []
     for a in range(n):
         j = si * i
@@ -92,7 +92,7 @@ def saa(pv, i, n):
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n : numero de parcelas (EX: numero de meses)
-    
+
     """
     i = conversao_de_taxa(i)
     i = i / 100
@@ -102,7 +102,7 @@ def saa(pv, i, n):
         j = si * i
         if (a + 1) != n: # a amortização so é somada ao saldo inicial no último pagamento
             am = 0
-        else:            # AM + SI 
+        else:            # AM + SI
             am = si
         pmt = am + j
         sd = si - am
@@ -113,16 +113,26 @@ def saa(pv, i, n):
 #==========================================CHAMANDO AS FUNÇÕES=======================================
 pv = 100000
 i = 0.64 # taxa mensal (7.95% a.a)
-n = 12 
+n = 12
 
-a = sac(pv, i, n) 
+a = sac(pv, i, n)
+b = price(pv, i, n)
+c = saa(pv, i, n)
 
-print('\nValor: R$',pv, '\nTaxa: ',i,'%', '\nParcelas: ', n)
-print('\nValores das Parcelas:')
-for v in range(len(a)):
-    print(v + 1,' - R$', a[v])
-print('\nValor total pago: R$', sum(a),'\n')
-
+#==========================================Comparações gráficas=======================================
+import matplotlib.pyplot as plt
+local_eixo_x = 1
+for valores in (a,b,c): # em cada loop é utlilizado uma das listas com os valores das parcelas
+    lista = []
+    for i in range(len(valores)):
+        lista.append(i + local_eixo_x) # cria uma lista com numeros para o eixo x
+    local_eixo_x += len(valores) + 1
+    plt.bar(lista, valores, label = 'Valor médio Parcelas: R$%.2f | Valor Total: R$%.2f' %(sum(valores) / len(valores), sum(valores)))
+plt.title('Evolução da parcelas em cada financiamento')
+plt.xlabel('Tempo')
+plt.ylabel('Valores das parcelas em (R$)')
+plt.legend()
+plt.show()
 
 """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> Anotações - formas de calculo: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
