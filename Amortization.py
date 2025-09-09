@@ -34,11 +34,11 @@ def seleciona_sistema():
 #~~~~~~~~~~~~~~~~~~~~~~~~~~> CONVERSÃO DE TAXA <~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def conversao_de_taxa(i):
     v = True
-    while v == True: # validacao da pergunta 1 (converter taxa?)
+    while v == True: 
         p = int(input('\nDeseja converter a taxa?\n1 - Sim\n2 - Não\n'))
         if p == 1:
             v2 = True
-            while v2 == True: # validacao da pergunta 2 (periodos para convercoes de taxa)
+            while v2 == True: 
                 p2 = int(input('\nEscolha a opção de conversão desejada: \n1 - Anual para mensal \n2 - Mensal para Anual\n'))
                 if p2 == 1:
                     i = (((1 + (i/100)) ** (1/12)) - 1) * 100 # conversao de a.a para a.m
@@ -64,7 +64,6 @@ def sac(pv, i, n):
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n: numero de parcelas (EX: numero de meses)
-
     """
     i = conversao_de_taxa(i)
     i = i / 100
@@ -87,7 +86,6 @@ def price(pv, i, n):
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n: numero de parcelas (EX: numero de meses)
-
     """
     i = conversao_de_taxa(i)
     i = i / 100
@@ -110,7 +108,6 @@ def saa(pv, i, n):
         pv: recebe o valor presente do financiamento
         i: recebe a taxa (lembrando que a taxa deve estar no mesmo periodo temporal que as parcelas)
         n : numero de parcelas (EX: numero de meses)
-
     """
     i = conversao_de_taxa(i)
     i = i / 100
@@ -118,7 +115,7 @@ def saa(pv, i, n):
     parc = []
     for a in range(n):
         j = si * i
-        if (a + 1) != n: # a amortização so é somada ao saldo inicial no último pagamento
+        if (a + 1) != n: # a amortização só é somada ao saldo inicial no último pagamento
             am = 0
         else:            # AM + SI
             am = si
@@ -129,18 +126,17 @@ def saa(pv, i, n):
     return (parc)
 
 
-#==========================================CHAMANDO AS FUNÇÕES=======================================
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> CHAMANDO AS FUNÇÕES <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pv = int(input('Digite o valor: '))
-i = int(input('Digite a taxa: ')) # taxa mensal (7.95% a.a)
+i = float(input('Digite a taxa: ')) # taxa mensal (7.95% a.a)
 n = int(input('Digite o numero de periodos: '))
 
-a = seleciona_sistema()
+a = seleciona_sistema() # a retorna uma lista com as parcelas
 
-
-print('\nValor: R$',pv, '\nTaxa: ',i,'%', '\nParcelas: ', n)
-print('\nValor das parcelas:')
-for j in range(len(a)):
-    print(j + 1,' - R$', a[j])
+# print('\nValor das parcelas:')
+# for j in range(len(a)):
+#     print(j + 1,' - R$', a[j])
+print('\nValor: R$', pv, '\nTaxa: ', i, '%', '\nParcelas: ', n)
 print('\nValor total pago: R$', sum(a),'\n')
 
 """
