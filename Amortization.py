@@ -133,9 +133,9 @@ n = int(input('Digite o numero de periodos: '))
 
 a = seleciona_sistema() # a retorna uma lista com as parcelas
 
-# print('\nValor das parcelas:')
-# for j in range(len(a)):
-#     print(j + 1,' - R$', a[j])
+print('\nValor das parcelas:')
+for j in range(len(a)):
+    print(j + 1,' - R$', a[j])
 print('\nValor: R$', pv, '\nTaxa: ', i, '%', '\nParcelas: ', n)
 print('\nValor total pago: R$', sum(a),'\n')
 
